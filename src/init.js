@@ -4,7 +4,7 @@ import PlayScene from './scenes/PlayScene.js';
 const config = {
     scale: {
         parent: 'contenedor',
-        mode: Phaser.Scale.ENVELOP,
+        mode: Phaser.Scale.FIT,
         with: 800,
         height: 600
     },
