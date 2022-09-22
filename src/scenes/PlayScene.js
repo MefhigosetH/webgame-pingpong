@@ -2,6 +2,7 @@
 * See https://phaser.io/examples/v3/view/physics/arcade/custom-bounds
 */
 import Paleta from "../gameObjects/Paleta.js";
+import Pelota from "../gameObjects/Pelota.js";
 
 export default class PlayScene extends Phaser.Scene {
     constructor() {
@@ -13,9 +14,6 @@ export default class PlayScene extends Phaser.Scene {
         this.alto_juego = this.sys.game.config.height;
         this.centro_x = this.ancho_juego / 2;
         this.centro_y = this.alto_juego / 2;
-
-        // Flags
-        this.playing = 0;
 
         // Cancha
         let cancha = new Phaser.Geom.Rectangle(50, 50, this.ancho_juego - 100, this.alto_juego - 100);
@@ -29,11 +27,8 @@ export default class PlayScene extends Phaser.Scene {
         this.paleta_der.body.setBoundsRectangle(cancha);
 
         // Bola
-        this.bola = this.physics.add.image(this.centro_x, this.centro_y, 'bola');
-        this.bola.setScale(2);
-        this.bola.setVelocityX(-400);
-        this.bola.setCollideWorldBounds(true);
-        this.bola.setBounce(1);
+        this.bola = new Pelota(this, this.centro_x, this.centro_y);
+        this.bola.body.setVelocityX(-400);
         this.bola.body.setBoundsRectangle(cancha);
 
         this.add.graphics()
@@ -123,6 +118,6 @@ export default class PlayScene extends Phaser.Scene {
     }
 
     palaCollide() {
-        this.bola.setVelocityY(Phaser.Math.Between(-120, 120));
+        this.bola.body.setVelocityY(Phaser.Math.Between(-120, 120));
     }
 }
