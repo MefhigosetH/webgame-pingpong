@@ -1,3 +1,6 @@
+/*
+* See https://phaser.io/examples/v3/view/physics/arcade/custom-bounds
+*/
 import Paleta from "../gameObjects/Paleta.js";
 
 export default class PlayScene extends Phaser.Scene {
@@ -11,11 +14,19 @@ export default class PlayScene extends Phaser.Scene {
         this.centro_x = this.ancho_juego / 2;
         this.centro_y = this.alto_juego / 2;
 
+        // Flags
+        this.playing = 0;
+
+        // Cancha
+        let cancha = new Phaser.Geom.Rectangle(50, 50, this.ancho_juego - 100, this.alto_juego - 100);
         this.add.image(this.centro_x, this.centro_y, 'separador');
 
         // Paletas
-        this.paleta_izq = new Paleta(this, 30, this.centro_y, 'paleta_izq');
-        this.paleta_der = new Paleta(this, this.ancho_juego - 30, this.centro_y, 'paleta_der');
+        this.paleta_izq = new Paleta(this, 70, this.centro_y);
+        this.paleta_izq.body.setBoundsRectangle(cancha);
+
+        this.paleta_der = new Paleta(this, this.ancho_juego - 70, this.centro_y);
+        this.paleta_der.body.setBoundsRectangle(cancha);
 
         // Bola
         this.bola = this.physics.add.image(this.centro_x, this.centro_y, 'bola');
@@ -23,6 +34,11 @@ export default class PlayScene extends Phaser.Scene {
         this.bola.setVelocityX(-400);
         this.bola.setCollideWorldBounds(true);
         this.bola.setBounce(1);
+        this.bola.body.setBoundsRectangle(cancha);
+
+        this.add.graphics()
+        .lineStyle(5, 0xffffff, 1)
+        .strokeRectShape(this.bola.body.customBoundsRectangle);
 
         // Fisicas
         this.physics.world.setBoundsCollision(false, false, true, true);
@@ -36,10 +52,10 @@ export default class PlayScene extends Phaser.Scene {
 
         this.input.addPointer(2);
 
-        var fullscreen_button = this.add.image(this.ancho_juego - 16, 16, 'fullscreen', 0)
+        var fullscreen_button = this.add.image(this.ancho_juego - 50, 10, 'fullscreen', 0)
                                 .setOrigin(1, 0)
                                 .setInteractive()
-                                .setScale(0.5);
+                                .setScale(0.4);
                                 
         fullscreen_button.on('pointerup', function () {
 
@@ -59,6 +75,7 @@ export default class PlayScene extends Phaser.Scene {
         // Control bola
         if(this.bola.x < 0 || this.bola.x > this.ancho_juego) {
             this.bola.setPosition(this.centro_x, this.centro_y);
+            this.palaCollide();
         }
 
         // Control pala derecha
